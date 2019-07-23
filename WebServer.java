@@ -1,28 +1,29 @@
+//java imports
 import java.net.*;
 
+/*
+Creates the web server and main thread
+Each new connection gets it's own thread
+*/
 public final class WebServer {
 	public static void main(String argv[]) throws Exception {
-		// Get the port number from the command line.
-		int port = 1234;
+		//socket in port 5050
+		int port = 5050;
 
-		// Establish the listen socket.
 		@SuppressWarnings("resource")
-		ServerSocket socket = new ServerSocket(port);
+		ServerSocket my_socket = new ServerSocket(port);
+		//show server is up and running & wants to add connects
 		System.out.println("Waiting for connections...");
 		
-		// Process HTTP service requests in an infinite loop.
+		//infinite loop to wait for connections
 		while (true) {
-			// Listen for a TCP connection request.
-			Socket connection = socket.accept();
-						
-			// Construct an object to process the HTTP request message.
-			HttpRequest request = new HttpRequest(connection);
-
-			// Create a new thread to process the request.
-			Thread thread = new Thread(request);
-
-			// Start the thread.
-			thread.start();
+			//finds a connection
+			Socket my_connection = my_socket.accept();
+			//creates a new http request for the connection
+			HttpRequest my_request = new HttpRequest(my_connection);
+			//makes a slave thread from the master
+			Thread my_thread = new Thread(my_request);
+			my_thread.start();
 		}
 	}
 }
