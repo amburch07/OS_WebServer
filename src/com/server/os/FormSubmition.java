@@ -1,0 +1,68 @@
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class FormSubmition{
+    private String firstName = null;
+    private String lastName = null;
+    private String email = null;
+    private String sex = null;
+    public FormSubmition(){
+        firstName = null;
+        lastName = null;
+        email = null;
+        sex = null;
+    }
+
+    public boolean setParameters(String s){
+        Pattern pattern = Pattern.compile("/[^&=]+=[^&=]+");
+        Matcher matcher = pattern.matcher(s);
+        System.out.println("Does Match: " + matcher.matches());
+        if(matcher.matches()){
+            System.out.println(matcher.group(0)); // whole matched expression
+            System.out.println(matcher.group(1)); // first expression from round brackets (Testing)
+            System.out.println(matcher.group(2)); // second one (123)
+            System.out.println(matcher.group(3)); // third one (Testing)
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    public static void main(String argv[]) throws Exception {
+        //System.out.println(argv[0]);
+        //f.setParameters(argv[0]);
+
+        // int width = 500;
+        // int height = 331;
+        //
+        // BufferedImage image = null;
+        // File f = null;
+        // try{
+        //   f = new File("../../sample_image.jpeg");
+        //   image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        //   image = ImageIO.read(f);
+        // }catch(FileNotFoundException e){
+        //   System.out.println("ERROR: " +e);
+        // }
+
+
+        System.out.println( "<HTML>\n");
+        System.out.println( "<HEAD>\n");
+        System.out.println( "<TITLE>A simple cgi script</TITLE>\n");
+        System.out.println( "</HEAD>\n");
+        System.out.println( "<BODY bgcolor=\"#dddddd\" text=\"#000000\">\n");
+
+        System.out.println( "<H1>This is a simple cgi script written in C</H1>\n");
+
+
+        System.out.println( "<table border=1>\n");
+        System.out.println( "<tr><td>\n");
+        System.out.println( "<font color=red><B>");
+
+        System.out.println("</BODY>\n");
+        System.out.println("</HTML>\n");
+        System.exit(0);
+    }
+
+}
