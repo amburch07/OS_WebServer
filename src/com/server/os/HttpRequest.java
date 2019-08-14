@@ -1,4 +1,4 @@
-//imports
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -6,7 +6,9 @@ import java.util.regex.*;
 import java.lang.*;
 
 /*
-Class for web socket to call to start HTTP request
+* Class for web socket to call to start HTTP request
+* Uses CGI to serve the client requests
+* 
 */
 final class HttpRequest implements Runnable {
 	//end of line characters
@@ -123,7 +125,7 @@ final class HttpRequest implements Runnable {
 					String email_acc = email.nextToken();
 					String pgender = gender.nextToken();
 
-						//create process and run 
+						//create process and run
 						String[] command = {"./formsubmition.cgi", querystring, firstname, lastname, email_acc,pgender};
 						ProcessBuilder processBuilder = new ProcessBuilder(command);
 						//Process p = processBuilder.inheritIO().start();

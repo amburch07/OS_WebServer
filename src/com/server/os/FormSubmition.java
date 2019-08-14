@@ -3,7 +3,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 /**
 * CGI PROGRAM, create HTML page from the from data
-*
+* Prints the HTML tags,
+* Pipe the output stream of the Program to the input stream of the server upon program exit. 
 */
 public class FormSubmition{
     private String firstName = null;
