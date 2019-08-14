@@ -8,7 +8,7 @@ import java.lang.*;
 /*
 * Class for web socket to call to start HTTP request
 * Uses CGI to serve the client requests
-* 
+*
 */
 final class HttpRequest implements Runnable {
 	//end of line characters
@@ -75,7 +75,7 @@ final class HttpRequest implements Runnable {
     }
 
 		if(Objects.equals(incomingQuery, "/")){
-			fileName = "./welcome.html";
+			fileName = "./index.html";
 		}else{
 			System.out.println("Didnot match with /");
 			fileName = "." + fileName;
