@@ -2,6 +2,8 @@
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.regex.*;
+import java.lang.*;
 
 /*
 Class for web socket to call to start HTTP request
@@ -35,6 +37,7 @@ final class HttpRequest implements Runnable {
 		DataOutputStream outStream = new DataOutputStream(my_socket.getOutputStream());
 		BufferedReader bReader = new BufferedReader(new InputStreamReader(inStream));
 		BufferedReader procReader = null;
+		StringBuilder returnhtml = null;
 
 		String getLine = bReader.readLine();
 
@@ -69,10 +72,17 @@ final class HttpRequest implements Runnable {
         fileName = tokens.nextToken();
     }
 
-		fileName = "." + fileName;
+		if(Objects.equals(incomingQuery, "/")){
+			fileName = "./welcome.html";
+		}else{
+			System.out.println("Didnot match with /");
+			fileName = "." + fileName;
+		}
+
 		System.out.println("FILENAME: " + fileName);
     System.out.println("QUERYSTRING: " + querystring);
 
+		//Create File Streamer
 		FileInputStream fis = null;
 		boolean fileExists = false;
 		boolean cgiRequest = true;
@@ -94,18 +104,43 @@ final class HttpRequest implements Runnable {
 
 		if(isCgiCall(fileName)){
 					//create a process StringBuilder
-          System.out.println("Executing ProcessBuilder...");
-					ProcessBuilder processBuilder = new ProcessBuilder("./formsubmition.cgi", querystring);
-					//Process p = processBuilder.inheritIO().start();
-					p = processBuilder.start();
 
-					p.waitFor();
+					tokens = new StringTokenizer(querystring, "&");
+					//parsing query string
+					StringTokenizer pname = new StringTokenizer(tokens.nextToken(), "=");
+					StringTokenizer lname = new StringTokenizer(tokens.nextToken(), "=");
+					StringTokenizer email = new StringTokenizer(tokens.nextToken(), "=");
+					StringTokenizer gender = new StringTokenizer(tokens.nextToken(), "=");
 
-					if(p.getErrorStream().read() != -1){
-						System.out.println("ompilation error: "  + p.getErrorStream());
+					pname.nextToken();
+					lname.nextToken();
+					email.nextToken();
+					gender.nextToken();
+					if(pname.hasMoreTokens() && lname.hasMoreTokens() && email.hasMoreTokens() && gender.hasMoreTokens()){
+						System.out.println("Executing ProcessBuilder...");
+					String firstname = pname.nextToken();
+					String lastname = lname.nextToken();
+					String email_acc = email.nextToken();
+					String pgender = gender.nextToken();
+
+						//create process and run 
+						String[] command = {"./formsubmition.cgi", querystring, firstname, lastname, email_acc,pgender};
+						ProcessBuilder processBuilder = new ProcessBuilder(command);
+						//Process p = processBuilder.inheritIO().start();
+						p = processBuilder.start();
+
+						p.waitFor();
+
+						if(p.getErrorStream().read() != -1){
+							System.out.println("compilation error: "  + p.getErrorStream());
+						}
+						System.out.println("Done getting result");
+						cgiRequest = true;
 					}
-					System.out.println("Done getting result");
-					cgiRequest = true;
+					else{
+						cgiRequest = false;
+					}
+
 					//send inpit stream
 		}
 
@@ -113,7 +148,6 @@ final class HttpRequest implements Runnable {
 		String statusLine = null;
 		String entityBody = null;
 		if (fileExists || isCgiCall(fileName)) {
-			System.out.println("IS HTML File: " + fileName);
 			statusLine = "HTTP/1.1 200 OK" + CRLF;
 		}
 		else {
@@ -121,10 +155,6 @@ final class HttpRequest implements Runnable {
 			//if file doesn't exist then 404 page loads
 			entityBody = "<HTML>" + "<HEAD><TITLE>Not Found</TITLE></HEAD>" + "<BODY><H1>Not Found</H1></BODY></HTML>";
 		}
-
-		//if file doesn't exist then 404 page loads
-		//entityBody = "<HTML>" + "<HEAD><TITLE>Not Found</TITLE></HEAD>" + "<BODY><H1>Not Found</H1></BODY></HTML>";
-
 		//write out page
 		outStream.writeBytes(statusLine);
 		outStream.writeBytes(CRLF);
@@ -136,8 +166,9 @@ final class HttpRequest implements Runnable {
 			sendBytes(fis, outStream);
 			fis.close();
 		}else if(cgiRequest && isCgiCall(fileName)){
-			System.out.println("IS CGI CALL");
 
+			//is a cgi request
+			//get input stream from the process and send it to the Socket
 			if(p.exitValue() == 0){
 				procReader = new BufferedReader(new InputStreamReader(p.getInputStream()));
 				String a = procReader.readLine();
@@ -149,7 +180,11 @@ final class HttpRequest implements Runnable {
 			}
 
 			procReader.close();
-
+		}else if(!cgiRequest && isCgiCall(fileName)){
+			System.out.println("Invalid form");
+			fis = new FileInputStream("./invalidinput.html");
+			sendBytes(fis, outStream);
+			fis.close();
 		}
 		else {
 				outStream.writeBytes(entityBody);

@@ -39,9 +39,8 @@ public class FormSubmition{
         System.out.println( "</HEAD>\n");
         System.out.println( "<BODY bgcolor=\"#4444aa\"text=\"#bbffbb\">\n");
 
-        System.out.println( "<H1>This is a simple cgi script written in JAVA</H1>\n");
+        System.out.println( "<H1>This is a simple cgi script written in C</H1>\n");
         System.out.println( "<HR>\n");
-        System.out.println( "<H1>Form Submitted, Thank you!!</H1>\n");
         System.out.println( "<table><tr><th>Firstname</th>");
         System.out.println( "<td>" + System.getProperty("cgi.fname") + "</td></tr>");
         System.out.println( "<tr><th>Lastname</th>");
@@ -50,8 +49,7 @@ public class FormSubmition{
         System.out.println( "<td>" + System.getProperty("cgi.email") + "</td></tr>");
         System.out.println( "<tr><th>Gender</th>");
         System.out.println( "<td>" + System.getProperty("cgi.gender") + "</td></tr></table>");
-        System.out.println( "<HR>\n");
-        System.out.println( "<img src=\"https://www.qegsblackburn.com/wp-content/uploads/Schools-out-for-Summer.jpg\" style=\"width:350px;height:150px;\">");
+
         System.out.println("</BODY>\n");
         System.out.println("</HTML>\n");
         System.exit(0);
