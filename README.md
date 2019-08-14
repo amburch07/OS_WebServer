@@ -1,5 +1,4 @@
 # OS_WebServer
-
 Basic web server written in Java, with multi-threading
 Supports HTTP/1.1
 
